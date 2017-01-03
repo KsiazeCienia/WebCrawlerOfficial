@@ -21,7 +21,7 @@ public class URLDownloadJDBC implements DownloadQueue {
     public URL getNextPage() {
         PreparedStatement stmt = null;
         try{
-            stmt = connection.prepareStatement("SELECT TOP 1 * FROM lista_odwiedzonych");
+            stmt = connection.prepareStatement("SELECT TOP 1 * FROM lista_do_odwiedzenia");
             ResultSet rs = stmt.executeQuery();
             rs.next();
             try {
@@ -48,19 +48,21 @@ public class URLDownloadJDBC implements DownloadQueue {
 
     @Override
     public void addPage(URL pageURL) {
-        Statement stmt = null;
-        try{
-            stmt = connection.createStatement();
-            stmt.executeUpdate("insert into lista_do_odwiedzenia (link) "
-                    + "values( '" + pageURL + "')");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        if(pageURL.toString().length() < 400) {
+            Statement stmt = null;
+            try {
+                stmt = connection.createStatement();
+                stmt.executeUpdate("insert into lista_do_odwiedzenia (link) "
+                        + "values( '" + pageURL + "')");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -70,7 +72,7 @@ public class URLDownloadJDBC implements DownloadQueue {
     public boolean isEmpty() {
         PreparedStatement stmt = null;
         try {
-            stmt = connection.prepareStatement("select count(*) from lista_odwiedzonych");
+            stmt = connection.prepareStatement("select count(*) from lista_do_odwiedzenia");
             ResultSet rs = stmt.executeQuery();
             rs.next();
             if(rs.getInt(1) == 0) {
@@ -93,7 +95,7 @@ public class URLDownloadJDBC implements DownloadQueue {
     public void deleteURL() {
         PreparedStatement stmt = null;
         try {
-            stmt = connection.prepareStatement("delete top (1) from lista_odwiedzonych;");
+            stmt = connection.prepareStatement("delete top (1) from lista_do_odwiedzenia");
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

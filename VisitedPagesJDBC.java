@@ -41,12 +41,11 @@ public class VisitedPagesJDBC implements VisitedPages {
     public boolean pageAlreadyVisited(URL pageURL) {
         PreparedStatement stmt = null;
         try {
-            stmt = connection.prepareStatement("select link from lista_odwiedzonych where link like ?" );
-            stmt.setString(1, pageURL.toString());
+            stmt = connection.prepareStatement("select count(*) from lista_odwiedzonych where link='" + pageURL +"'" );
             ResultSet rs = stmt.executeQuery();
             rs.next();
-            if (rs.getString("link") != null) {
-                return true;
+            if(rs.getInt(1) == 0) {
+                return false;
             }
 
         } catch (SQLException e) {
@@ -60,6 +59,6 @@ public class VisitedPagesJDBC implements VisitedPages {
                 }
             }
         }
-        return false;
+        return true;
     }
 }

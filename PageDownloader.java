@@ -21,10 +21,10 @@ public class PageDownloader implements WWWPageDownloader {
                 }
                 return stringBuilder.toString();
             } catch (IOException e) {
-                throw new DownloaderException("Unable to connect!");
+                throw new DownloaderException();
             }
         } catch (MalformedURLException e) {
-            throw new DownloaderException("Page doesn't exist!");
+            throw new DownloaderException();
         }
     }
 }
